@@ -5,7 +5,5 @@ package org.firstinspires.ftc.teamcode;
  */
 
 public class TestClass {
-    //please work im begging you
-    //OH MY GOD IT WORKED
-    //I HAVE NEVER BEEN HAPPIER IN THE LAST 10 MINUTES OF MY LIFE
+
 }
