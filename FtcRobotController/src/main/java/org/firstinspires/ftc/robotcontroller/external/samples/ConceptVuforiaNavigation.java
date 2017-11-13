@@ -149,7 +149,7 @@ public class ConceptVuforiaNavigation extends LinearOpMode {
         /**
          * We use units of mm here because that's the recommended units of measurement for the
          * size values specified in the XML for the ImageTarget trackables in data sets. E.g.:
-         *      <ImageTarget name="stones" size="247 173"/> v 
+         *      <ImageTarget name="stones" size="247 173"/>
          * You don't *have to* use mm here, but the units here and the units used in the XML
          * target configuration files *must* correspond for the math to work out correctly.
          */
