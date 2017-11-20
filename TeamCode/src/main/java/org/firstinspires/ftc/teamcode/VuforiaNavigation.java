@@ -5,9 +5,15 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 /**
@@ -15,7 +21,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  */
 
 @Autonomous(name="Vuforia Navigation", group ="Autonomous Testing")
-public class VuforiaNavigation extends LinearOpMode {
+public class VuforiaNavigation extends LinearOpMode
+{
 
     /* Declare OpMode members. */
     Hardware robot   = new Hardware();
@@ -28,8 +35,11 @@ public class VuforiaNavigation extends LinearOpMode {
      */
     VuforiaLocalizer vuforia;
 
+    VuforiaTrackable relicTemplate;
+
     @Override
-    public void runOpMode() {
+    public void runOpMode()
+    {
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
          * If no camera monitor is desired, use the parameterless constructor instead (commented out below).
@@ -61,7 +71,7 @@ public class VuforiaNavigation extends LinearOpMode {
          * @see VuMarkInstanceId
          */
         VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-        VuforiaTrackable relicTemplate = relicTrackables.get(0);
+        relicTemplate = relicTrackables.get(0);
         relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
 
         /**
@@ -75,6 +85,20 @@ public class VuforiaNavigation extends LinearOpMode {
         float mmBotWidth       = 18 * mmPerInch;            // ... or whatever is right for your robot
         float mmFTCFieldWidth  = (12*12 - 2) * mmPerInch;   // the FTC field is ~11'10" center-to-center of the glass panels
 
+        // Create Points for the VuMark
+        OpenGLMatrix vuMarkPosition = OpenGLMatrix
+                /* Translate the target off to the RED WALL. Our translation here
+                is a negative translation in X.*/
+                .translation(-mmFTCFieldWidth/2, 0, 0)
+                .multiplied(Orientation.getRotationMatrix(
+                        /* In the fixed (field) coordinate system, rotate 90deg in X, then 90 in Z */
+                        AxesReference.EXTRINSIC, AxesOrder.XZX,
+                        AngleUnit.DEGREES, 90, 90, 0));
+
+        // Create position of phone on the robot
+        OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix.translation(mmBotWidth/2,0,0);
+
+
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
         waitForStart();
@@ -84,6 +108,64 @@ public class VuforiaNavigation extends LinearOpMode {
         while (opModeIsActive()) {
 
         }
+    }
+
+    public void moveTo(OpenGLMatrix targetLocation)
+    {
+        VectorF target = targetLocation.getTranslation();
+        VectorF current = lastLocation.getTranslation();
+
+        double dX, dZ,  aPow, bPow;
+        double mirrorAngle;
+
+        while(!lastLocation.equals(targetLocation))
+        {
+            dX = target.get(0)-current.get(0);
+            dZ = target.get(2)-current.get(2);
+
+            aPow = getMotorPower(dX, dZ, 'a');
+            bPow = getMotorPower(dX, dZ, 'b');
+
+            robot.correctionTimer.start();
+
+            while(!robot.correctionTimer.isDone)
+            {
+                drive(aPow, bPow);
+
+                lastLocation = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getPose();
+                current = lastLocation.getTranslation();
+
+                mirrorAngle = servoArcTan(current.get(0)/current.get(2));
+                robot.Mirror.setPosition(mirrorAngle);
+            }
+        }
+    }
+
+    public double getMotorPower(double dX, double dZ, char group)
+    {
+        switch (group)
+        {
+            case 'a':
+                return ((dZ + dX)/Math.pow((2*dX*dX + 2*dZ*dZ),.5));
+            case 'b':
+                return ((dZ - dX)/Math.pow((2*dX*dX + 2*dZ*dZ),.5));
+            default:
+                return 0;
+        }
+    }
+
+    public double servoArcTan(double value)
+    {
+        double ans = Math.atan(value);
+        ans = ans/Math.PI;
+
+        return (ans + 0.5);
+    }
+
+    public void drive(double a, double b)
+    {
+        robot.FR.setPower(a); robot.BL.setPower(a);
+        robot.FL.setPower(b); robot.BR.setPower(b);
     }
 }
 

@@ -38,6 +38,7 @@ public class Hardware
     HardwareMap hwMap           =  null; // Hardware Map of Robot
 
     public ElapsedTime clock  = new ElapsedTime(); // Internal Robot Time (IRT)
+    public Timer correctionTimer = new Timer(1000);
 
 
     /* Constructor */
