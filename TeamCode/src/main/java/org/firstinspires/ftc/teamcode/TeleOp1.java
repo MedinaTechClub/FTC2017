@@ -5,12 +5,16 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
+import com.qualcomm.robotcore.util.Range;
+
 @TeleOp(name="TeleOp: 1", group="TeleOp")
 public class TeleOp1 extends OpMode
 {
 
     /* Declare OpMode members. */
     Hardware robot   = new Hardware();
+
+    double position;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -42,25 +46,122 @@ public class TeleOp1 extends OpMode
      */
     @Override
     public void loop() {
-        if (gamepad1.y){
-            robot.Swing.setPower(1);
+        double deadzone = 0.2;
+
+
+
+        float xValueRight = -gamepad1.right_stick_x;
+
+        float yValueRight = -gamepad1.right_stick_y;
+
+        float xValueLeft = gamepad1.left_stick_x;
+
+        float yValueLeft = -gamepad1.left_stick_y;
+
+
+
+        // Group a is Front Left and Rear Right, Group b is Front Right and Rear Left
+
+        float a;
+
+        float b;
+
+        float turnPower;
+
+
+
+        if (Math.abs(xValueRight) <= deadzone && Math.abs(yValueRight) <= deadzone){
+
+            // And is used here because both the y and x values of the right stick should be less than the deadzone
+
+
+
+            a = Range.clip(yValueLeft + xValueLeft, -1,1);
+
+            b = Range.clip(yValueLeft - xValueLeft, -1,1);
+
+
+
+
+
+            robot.FL.setPower(a);
+
+            robot.FR.setPower(b);
+
+            robot.BL.setPower(b);
+
+            robot.BR.setPower(a);
+
+
+
+            telemetry.addData("a",  "%.2f", a);
+
+            telemetry.addData("b", "%.2f", b);
+
         }
-        if (gamepad1.a){
+
+
+
+
+
+        else if(Math.abs(xValueRight) > deadzone || Math.abs(yValueRight) > deadzone){
+
+            // Or is used here because only one of the y and x values of the right stick needs to be greater than the deadzone
+            turnPower = Range.clip(xValueRight, -1,1);
+
+
+            robot.FL.setPower(-turnPower);
+
+            robot.FR.setPower(turnPower);
+
+            robot.BL.setPower(-turnPower);
+
+            robot.BR.setPower(turnPower);
+
+        }
+
+        else {
+
+            robot.FL.setPower(0);
+
+            robot.FR.setPower(0);
+
+            robot.BL.setPower(0);
+
+            robot.BR.setPower(0);
+
+        }
+        position = robot.Pivot.getPosition();
+
+        if (gamepad1.dpad_up) {
             robot.Swing.setPower(-1);
+
         }
-        if (gamepad1.dpad_up){
-            robot.Elbow.setPower(1);
+
+        if (gamepad1.dpad_down) {
+            robot.Swing.setPower(1);
+
         }
-        if (gamepad1.dpad_down){
-            robot.Elbow.setPower(-1);
+
+        if(gamepad1.a){
+
+            robot.Claw.setPosition(1);
+
         }
-        if(gamepad1.x){
-            robot.Mirror.setPosition(180);
+        if(gamepad1.b){
+
+            robot.Claw.setPosition(0);
+
         }
-        else{
-            robot.Swing.setPower(0);
-            robot.Elbow.setPower(0);
-            robot.Mirror.setPosition(0);
+        if(gamepad1.right_bumper) {
+            position += .001;
+
+            robot.Pivot.setPosition(position);
+        }
+        if(gamepad1.left_bumper) {
+            position -= .001;
+
+            robot.Pivot.setPosition(position);
         }
     }
 

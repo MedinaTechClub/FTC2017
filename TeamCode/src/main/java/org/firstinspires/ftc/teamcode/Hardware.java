@@ -53,7 +53,7 @@ public class Hardware
         // Define and Initialize Motors
 
         // Base Motors
-      /*  FR = hwMap.get(DcMotor.class, "FR");
+        FR = hwMap.get(DcMotor.class, "FR");
         FL = hwMap.get(DcMotor.class, "FL");
         BR = hwMap.get(DcMotor.class, "BR");
         BL = hwMap.get(DcMotor.class, "BL");
@@ -61,42 +61,42 @@ public class Hardware
         FR.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         FL.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         BR.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        BL.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors*/
+        BL.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
         // Arm Motors
         Swing = hwMap.get(DcMotor.class, "swing");
-        Elbow = hwMap.get(DcMotor.class, "elbow");
+        //Elbow = hwMap.get(DcMotor.class, "elbow");
 
         // Set all motors to zero power
-   /*     FR.setPower(0);
+        FR.setPower(0);
         FL.setPower(0);
         BR.setPower(0);
         BL.setPower(0);
-*/
+
         Swing.setPower(0);
-        Elbow.setPower(0);
+        //Elbow.setPower(0);
 
 
         // Set Motors to Run with or Without Encoders
-     /*   FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-*/
+
         Swing.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        Elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //Elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         // Define and initialize ALL installed servos.
-     //   Pivot = hwMap.get(Servo.class, "pivot");
-   //     Claw  = hwMap.get(Servo.class, "claw");
+        Pivot = hwMap.get(Servo.class, "pivot");
+        Claw  = hwMap.get(Servo.class, "claw");
 
-        Mirror = hwMap.get(Servo.class, "mirror");
+        //Mirror = hwMap.get(Servo.class, "mirror");
 
-  //      Pivot.setPosition(0);
-   //     Claw.setPosition(0);
+        Pivot.setPosition(0);
+        Claw.setPosition(0);
 
-        Mirror.setPosition(0);
+        //Mirror.setPosition(0);
     }
 
 }
