@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.vuforia.VIDEO_BACKGROUND_REFLECTION;
+import com.vuforia.VideoBackgroundConfig;
+import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -15,6 +18,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaPoseMatrix;
 
 /**
  * Created by Brian Towne on 11/15/2017.
@@ -64,6 +68,8 @@ public class VuforiaNavigation extends LinearOpMode
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
+        VideoBackgroundConfig cfg= new VideoBackgroundConfig();
+        cfg.setReflection(VIDEO_BACKGROUND_REFLECTION.VIDEO_BACKGROUND_REFLECTION_ON);
         /**
          * Load the data set containing the VuMarks for Relic Recovery. There's only one trackable
          * in this data set: all three of the VuMarks in the game were created from this one template,
@@ -118,7 +124,7 @@ public class VuforiaNavigation extends LinearOpMode
         double dX, dZ,  aPow, bPow;
         double mirrorAngle;
 
-        while(!lastLocation.equals(targetLocation))//While wwe still want to be correcting this runs
+        while(!lastLocation.equals(targetLocation))//While we still want to be correcting, this runs
         {
             dX = target.get(0)-current.get(0);//Gets 'X' coordinate
             dZ = target.get(2)-current.get(2);//Gets 'Z' coordinate
