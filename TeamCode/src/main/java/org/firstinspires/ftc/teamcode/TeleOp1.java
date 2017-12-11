@@ -49,7 +49,6 @@ public class TeleOp1 extends OpMode
         double deadzone = 0.2;
 
 
-
         float xValueRight = -gamepad1.right_stick_x;
 
         float yValueRight = -gamepad1.right_stick_y;
@@ -57,7 +56,6 @@ public class TeleOp1 extends OpMode
         float xValueLeft = gamepad1.left_stick_x;
 
         float yValueLeft = -gamepad1.left_stick_y;
-
 
 
         // Group a is Front Left and Rear Right, Group b is Front Right and Rear Left
@@ -69,19 +67,14 @@ public class TeleOp1 extends OpMode
         float turnPower;
 
 
-
-        if (Math.abs(xValueRight) <= deadzone && Math.abs(yValueRight) <= deadzone){
+        if (Math.abs(xValueRight) <= deadzone && Math.abs(yValueRight) <= deadzone) {
 
             // And is used here because both the y and x values of the right stick should be less than the deadzone
 
 
+            a = Range.clip(yValueLeft + xValueLeft, -1, 1);
 
-            a = Range.clip(yValueLeft + xValueLeft, -1,1);
-
-            b = Range.clip(yValueLeft - xValueLeft, -1,1);
-
-
-
+            b = Range.clip(yValueLeft - xValueLeft, -1, 1);
 
 
             robot.FL.setPower(a);
@@ -93,21 +86,14 @@ public class TeleOp1 extends OpMode
             robot.BR.setPower(a);
 
 
-
-            telemetry.addData("a",  "%.2f", a);
+            telemetry.addData("a", "%.2f", a);
 
             telemetry.addData("b", "%.2f", b);
 
-        }
-
-
-
-
-
-        else if(Math.abs(xValueRight) > deadzone || Math.abs(yValueRight) > deadzone){
+        } else if (Math.abs(xValueRight) > deadzone || Math.abs(yValueRight) > deadzone) {
 
             // Or is used here because only one of the y and x values of the right stick needs to be greater than the deadzone
-            turnPower = Range.clip(xValueRight, -1,1);
+            turnPower = Range.clip(xValueRight, -1, 1);
 
 
             robot.FL.setPower(-turnPower);
@@ -118,9 +104,7 @@ public class TeleOp1 extends OpMode
 
             robot.BR.setPower(turnPower);
 
-        }
-
-        else {
+        } else {
 
             robot.FL.setPower(0);
 
@@ -134,13 +118,17 @@ public class TeleOp1 extends OpMode
         position = robot.Pivot.getPosition();
 
         if (gamepad1.dpad_up) {
-            robot.Swing.setPower(-1);
+            robot.Swing.setPower(-.4);
 
+        } else {
+            robot.Swing.setPower(0);
         }
 
         if (gamepad1.dpad_down) {
-            robot.Swing.setPower(1);
-
+            robot.Swing.setPower(.4);
+        } else
+        {
+            robot.Swing.setPower(0);
         }
 
         if(gamepad1.a){
