@@ -31,6 +31,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.vuforia.VIDEO_BACKGROUND_REFLECTION;
+import com.vuforia.VideoBackgroundConfig;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.ConceptVuforiaNavigation;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -116,6 +118,9 @@ public class VuMarkIdentificationTest extends LinearOpMode {
          */
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+
+        VideoBackgroundConfig cfg= new VideoBackgroundConfig();
+        cfg.setReflection(VIDEO_BACKGROUND_REFLECTION.VIDEO_BACKGROUND_REFLECTION_ON);
 
         /**
          * Load the data set containing the VuMarks for Relic Recovery. There's only one trackable

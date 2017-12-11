@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.vuforia.VIDEO_BACKGROUND_REFLECTION;
+import com.vuforia.VideoBackgroundConfig;
+import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -15,6 +18,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.robotcore.internal.vuforia.VuforiaPoseMatrix;
 
 /**
  * Created by Brian Towne on 11/15/2017.
@@ -64,6 +68,8 @@ public class VuforiaNavigation extends LinearOpMode
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
+        VideoBackgroundConfig cfg= new VideoBackgroundConfig();
+        cfg.setReflection(VIDEO_BACKGROUND_REFLECTION.VIDEO_BACKGROUND_REFLECTION_ON);
         /**
          * Load the data set containing the VuMarks for Relic Recovery. There's only one trackable
          * in this data set: all three of the VuMarks in the game were created from this one template,
@@ -110,33 +116,33 @@ public class VuforiaNavigation extends LinearOpMode
         }
     }
 
-    public void moveTo(OpenGLMatrix targetLocation)
+    public void moveTo(OpenGLMatrix targetLocation)//Moves robot to new coordinates
     {
-        VectorF target = targetLocation.getTranslation();
+        VectorF target = targetLocation.getTranslation();//Sets current and target locations
         VectorF current = lastLocation.getTranslation();
 
         double dX, dZ,  aPow, bPow;
         double mirrorAngle;
 
-        while(!lastLocation.equals(targetLocation))
+        while(!lastLocation.equals(targetLocation))//While we still want to be correcting, this runs
         {
-            dX = target.get(0)-current.get(0);
-            dZ = target.get(2)-current.get(2);
+            dX = target.get(0)-current.get(0);//Gets 'X' coordinate
+            dZ = target.get(2)-current.get(2);//Gets 'Z' coordinate
 
-            aPow = getMotorPower(dX, dZ, 'a');
+            aPow = getMotorPower(dX, dZ, 'a');//Gets the motor power required for the new location
             bPow = getMotorPower(dX, dZ, 'b');
 
-            robot.correctionTimer.start();
+            robot.correctionTimer.start();//Starts running the correction timer
 
-            while(!robot.correctionTimer.isDone)
+            while(!robot.correctionTimer.isDone)//While the correction timer is running this loops
             {
-                drive(aPow, bPow);
+                drive(aPow, bPow);//Sets the motor powers for all 4 motors
 
-                lastLocation = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getPose();
-                current = lastLocation.getTranslation();
+                lastLocation = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getPose();//Retrieves the old location
+                current = lastLocation.getTranslation();//Defines 'current' VectorF to just translation, loses rotation
 
-                mirrorAngle = servoArcTan(current.get(0)/current.get(2));
-                robot.Mirror.setPosition(mirrorAngle);
+                mirrorAngle = servoArcTan(current.get(0)/current.get(2));//Calculates the required mirror position for correct orientation
+                robot.Mirror.setPosition(mirrorAngle);//Sets the mirror position
             }
         }
     }
@@ -154,7 +160,7 @@ public class VuforiaNavigation extends LinearOpMode
         }
     }
 
-    public double servoArcTan(double value)
+    public double servoArcTan(double value)//Calculates the servo position given
     {
         double ans = Math.atan(value);
         ans = ans/Math.PI;
@@ -162,7 +168,7 @@ public class VuforiaNavigation extends LinearOpMode
         return (ans + 0.5);
     }
 
-    public void drive(double a, double b)
+    public void drive(double a, double b)//Sets all 4 motor powers
     {
         robot.FR.setPower(a); robot.BL.setPower(a);
         robot.FL.setPower(b); robot.BR.setPower(b);
