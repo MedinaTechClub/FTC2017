@@ -115,17 +115,17 @@ public class TeleOp1 extends OpMode
             robot.BR.setPower(0);
 
         }
-        position = robot.Pivot.getPosition();
+
 
         if (gamepad1.dpad_up) {
-            robot.Swing.setPower(-.4);
+            robot.Swing.setPower(.6);
 
         } else {
             robot.Swing.setPower(0);
         }
 
         if (gamepad1.dpad_down) {
-            robot.Swing.setPower(.4);
+            robot.Swing.setPower(-.6);
         } else
         {
             robot.Swing.setPower(0);
@@ -142,15 +142,17 @@ public class TeleOp1 extends OpMode
 
         }
         if(gamepad1.right_bumper) {
-            position += .001;
 
-            robot.Pivot.setPosition(position);
+            robot.Pivot.setPower(.4);
         }
-        if(gamepad1.left_bumper) {
-            position -= .001;
+        else if(gamepad1.left_bumper) {
 
-            robot.Pivot.setPosition(position);
+            robot.Pivot.setPower(-.4);
         }
+        else{
+            robot.Pivot.setPower(0);
+        }
+        //telemetry.addData("position", position);
     }
 
     /*

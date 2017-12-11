@@ -158,7 +158,7 @@ public class VuMarkIdentificationTest extends LinearOpMode {
                  * it is perhaps unlikely that you will actually need to act on this pose information, but
                  * we illustrate it nevertheless, for completeness. */
                 OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getPose();
-                telemetry.addData("Pose", format(pose));
+                //telemetry.addData("Pose", format(pose));
 
                 /* We further illustrate how to decompose the pose into useful rotational and
                  * translational components */
@@ -175,6 +175,10 @@ public class VuMarkIdentificationTest extends LinearOpMode {
                     double rX = rot.firstAngle;
                     double rY = rot.secondAngle;
                     double rZ = rot.thirdAngle;
+
+                    telemetry.addData("rX", rX);
+                    telemetry.addData("rY", rY);
+                    telemetry.addData("rZ", rZ);
                 }
             }
             else {

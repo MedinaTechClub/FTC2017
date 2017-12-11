@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -25,7 +27,7 @@ public class Hardware
     public DcMotor Elbow = null; // Elbow Joint of Arm
 
     // Arm Servos
-    public Servo Pivot = null; // Pivot of Arm
+    public CRServo Pivot = null; // Pivot of Arm
     public Servo Claw = null; // End Effector of Arm
 
     // Mirror Servo
@@ -88,12 +90,14 @@ public class Hardware
 
 
         // Define and initialize ALL installed servos.
-        Pivot = hwMap.get(Servo.class, "pivot");
+        Pivot = hwMap.get(CRServo.class, "pivot");
         Claw  = hwMap.get(Servo.class, "claw");
 
         //Mirror = hwMap.get(Servo.class, "mirror");
 
-        Pivot.setPosition(0);
+
+        //Pivot.setPower(0);
+        Pivot.setDirection(DcMotorSimple.Direction.FORWARD);
         Claw.setPosition(0);
 
         //Mirror.setPosition(0);
