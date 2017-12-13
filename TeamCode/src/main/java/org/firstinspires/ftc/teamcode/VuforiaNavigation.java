@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -104,6 +105,9 @@ public class VuforiaNavigation extends LinearOpMode
         // Create position of phone on the robot
         OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix.translation(mmBotWidth/2,0,0);
 
+        // Create Safe Zone Position
+        OpenGLMatrix safeZone = OpenGLMatrix.translation(mmBotWidth/2,0,0);
+
 
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
@@ -112,10 +116,55 @@ public class VuforiaNavigation extends LinearOpMode
         relicTrackables.activate();
 
         while (opModeIsActive()) {
-
+            moveTo(safeZone);
         }
     }
 
+    public void moveTo(OpenGLMatrix targetLocation)//Moves robot to new coordinates
+    {
+        VectorF target = targetLocation.getTranslation();//Sets current and target locations
+        VectorF current = lastLocation.getTranslation();
+
+        double dX, dZ,  aPow, bPow;
+        double moveAngle, robotAngle;
+
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
+        while(!current.equals(target))//While we still want to be correcting, this runs
+        {
+            dX = target.get(0) - current.get(0);//Gets 'X' coordinate
+            dZ = target.get(2) - current.get(2);//Gets 'Z' coordinate
+
+            moveAngle = Math.atan(dX/dZ);
+            robotAngle = Math.atan(current.get(0)/current.get(2));
+
+            robot.correctionTimer.start();//Starts running the correction timer
+
+            while(!robot.correctionTimer.isDone)//While the correction timer is running this loops
+            {
+
+                drive(moveAngle+robotAngle);//Sets the motor powers for all 4 motors
+
+            }
+            while(vuMark == RelicRecoveryVuMark.UNKNOWN)
+            {
+                if(robotAngle <= 0)
+                {
+                    drive(0.5, -0.5);
+                }
+                else
+                {
+                    drive(-0.5, 0.5);
+                }
+            }
+            lastLocation = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getPose();//Retrieves the old location
+            current = lastLocation.getTranslation();//Defines 'current' VectorF to just translation, loses rotation
+        }
+
+
+    }
+
+    /*
     public void moveTo(OpenGLMatrix targetLocation)//Moves robot to new coordinates
     {
         VectorF target = targetLocation.getTranslation();//Sets current and target locations
@@ -146,7 +195,9 @@ public class VuforiaNavigation extends LinearOpMode
             }
         }
     }
+    */
 
+    /*
     public double getMotorPower(double dX, double dZ, char group)
     {
         switch (group)
@@ -159,7 +210,9 @@ public class VuforiaNavigation extends LinearOpMode
                 return 0;
         }
     }
+    */
 
+    /*
     public double servoArcTan(double value)//Calculates the servo position given
     {
         double ans = Math.atan(value);
@@ -167,11 +220,17 @@ public class VuforiaNavigation extends LinearOpMode
 
         return (ans + 0.5);
     }
+    */
 
     public void drive(double a, double b)//Sets all 4 motor powers
     {
         robot.FR.setPower(a); robot.BL.setPower(a);
         robot.FL.setPower(b); robot.BR.setPower(b);
+    }
+
+    public void drive(double angleRadians)//Sets Robot to move at an Angle
+    {
+        drive(Math.cos(Math.PI/4 - angleRadians), Math.sin(Math.PI/4 - angleRadians));
     }
 }
 
