@@ -45,6 +45,9 @@ public class VuforiaNavigation extends LinearOpMode
     @Override
     public void runOpMode()
     {
+
+        robot.init(hardwareMap);
+
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
          * If no camera monitor is desired, use the parameterless constructor instead (commented out below).
@@ -102,11 +105,8 @@ public class VuforiaNavigation extends LinearOpMode
                         AxesReference.EXTRINSIC, AxesOrder.XZX,
                         AngleUnit.DEGREES, 90, 90, 0));
 
-        // Create position of phone on the robot
-        OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix.translation(mmBotWidth/2,0,0);
-
         // Create Safe Zone Position
-        OpenGLMatrix safeZone = OpenGLMatrix.translation(mmBotWidth/2,0,0);
+        OpenGLMatrix safeZone = OpenGLMatrix.translation(30*mmPerInch,0,16*mmPerInch);
 
 
         telemetry.addData(">", "Press Play to start");
@@ -116,21 +116,43 @@ public class VuforiaNavigation extends LinearOpMode
         relicTrackables.activate();
 
         while (opModeIsActive()) {
-            moveTo(safeZone);
+            //moveTo(safeZone);
+            //drive(1,1);
+
+            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+                drive(0);
+            }
+            else{
+                drive(0,0);
+            }
         }
     }
 
+
     public void moveTo(OpenGLMatrix targetLocation)//Moves robot to new coordinates
     {
+
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
+
+
+
+        while(vuMark==RelicRecoveryVuMark.UNKNOWN){
+            //currently, do nothing until see vuMark
+        }
+        telemetry.addData("VuMark Found", vuMark);
+        telemetry.update();
+
+        lastLocation = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getPose();//Retrieves the original location
         VectorF target = targetLocation.getTranslation();//Sets current and target locations
         VectorF current = lastLocation.getTranslation();
 
         double dX, dZ,  aPow, bPow;
         double moveAngle, robotAngle;
 
-        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
 
-        while(!current.equals(target))//While we still want to be correcting, this runs
+        while(target.get(0)!=current.get(0) && target.get(2)!=current.get(2))//While we still want to be correcting, this runs
         {
             dX = target.get(0) - current.get(0);//Gets 'X' coordinate
             dZ = target.get(2) - current.get(2);//Gets 'Z' coordinate
@@ -138,9 +160,11 @@ public class VuforiaNavigation extends LinearOpMode
             moveAngle = Math.atan(dX/dZ);
             robotAngle = Math.atan(current.get(0)/current.get(2));
 
-            robot.correctionTimer.start();//Starts running the correction timer
+            robot.clock.reset();
 
-            while(!robot.correctionTimer.isDone)//While the correction timer is running this loops
+            //robot.correctionTimer.start();//Starts running the correction timer
+
+            while(robot.clock.milliseconds()<1000)//While the correction timer is running this loops (!robot.correctionTimer.isDone)
             {
 
                 drive(moveAngle+robotAngle);//Sets the motor powers for all 4 motors
@@ -162,7 +186,9 @@ public class VuforiaNavigation extends LinearOpMode
         }
 
 
+
     }
+
 
     /*
     public void moveTo(OpenGLMatrix targetLocation)//Moves robot to new coordinates
@@ -224,8 +250,8 @@ public class VuforiaNavigation extends LinearOpMode
 
     public void drive(double a, double b)//Sets all 4 motor powers
     {
-        robot.FR.setPower(a); robot.BL.setPower(a);
-        robot.FL.setPower(b); robot.BR.setPower(b);
+        robot.FR.setPower(-1*a); robot.BL.setPower(-1*a);
+        robot.FL.setPower(-1*b); robot.BR.setPower(-1*b);
     }
 
     public void drive(double angleRadians)//Sets Robot to move at an Angle

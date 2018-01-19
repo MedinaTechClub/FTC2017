@@ -27,7 +27,7 @@ public class Hardware
     public DcMotor Elbow = null; // Elbow Joint of Arm
 
     // Arm Servos
-    public CRServo Pivot = null; // Pivot of Arm
+    public Servo Pivot = null; // Pivot of Arm
     public Servo Claw = null; // End Effector of Arm
 
     // Mirror Servo
@@ -40,6 +40,7 @@ public class Hardware
     HardwareMap hwMap           =  null; // Hardware Map of Robot
 
     public ElapsedTime clock  = new ElapsedTime(); // Internal Robot Time (IRT)
+
     public Timer correctionTimer = new Timer(1000);
 
 
@@ -55,10 +56,10 @@ public class Hardware
         // Define and Initialize Motors
 
         // Base Motors
-        FR = hwMap.get(DcMotor.class, "FR");
-        FL = hwMap.get(DcMotor.class, "FL");
-        BR = hwMap.get(DcMotor.class, "BR");
-        BL = hwMap.get(DcMotor.class, "BL");
+        FR = hwMap.get(DcMotor.class, "FL");
+        FL = hwMap.get(DcMotor.class, "BL");
+        BR = hwMap.get(DcMotor.class, "FR");
+        BL = hwMap.get(DcMotor.class, "BR");
 
         FR.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         FL.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
@@ -90,15 +91,15 @@ public class Hardware
 
 
         // Define and initialize ALL installed servos.
-        Pivot = hwMap.get(CRServo.class, "pivot");
+        Pivot = hwMap.get(Servo.class, "pivot");
         Claw  = hwMap.get(Servo.class, "claw");
 
         //Mirror = hwMap.get(Servo.class, "mirror");
 
 
         //Pivot.setPower(0);
-        Pivot.setDirection(DcMotorSimple.Direction.FORWARD);
-        Claw.setPosition(0);
+        Pivot.setPosition(Pivot.getPosition());
+        Claw.setPosition(0.4);
 
         //Mirror.setPosition(0);
     }

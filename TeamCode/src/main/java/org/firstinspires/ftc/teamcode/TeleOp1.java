@@ -46,113 +46,128 @@ public class TeleOp1 extends OpMode
      */
     @Override
     public void loop() {
+
+        double armRot = robot.Pivot.getPosition();
+
         double deadzone = 0.2;
 
-
         float xValueRight = -gamepad1.right_stick_x;
-
         float yValueRight = -gamepad1.right_stick_y;
-
         float xValueLeft = gamepad1.left_stick_x;
-
         float yValueLeft = -gamepad1.left_stick_y;
 
-
         // Group a is Front Left and Rear Right, Group b is Front Right and Rear Left
-
         float a;
-
         float b;
-
         float turnPower;
 
+        if(!gamepad1.x) {
+            if (Math.abs(xValueRight) <= deadzone && Math.abs(yValueRight) <= deadzone) {
 
-        if (Math.abs(xValueRight) <= deadzone && Math.abs(yValueRight) <= deadzone) {
-
-            // And is used here because both the y and x values of the right stick should be less than the deadzone
-
-
-            a = Range.clip(yValueLeft + xValueLeft, -1, 1);
-
-            b = Range.clip(yValueLeft - xValueLeft, -1, 1);
+                // And is used here because both the y and x values of the right stick should be less than the deadzone
+                a = Range.clip(yValueLeft + xValueLeft, -1, 1);
+                b = Range.clip(yValueLeft - xValueLeft, -1, 1);
 
 
-            robot.FL.setPower(a);
+                robot.FL.setPower(a);
+                robot.FR.setPower(b);
+                robot.BL.setPower(b);
+                robot.BR.setPower(a);
 
-            robot.FR.setPower(b);
+                telemetry.addData("a", "%.2f", a);
+                telemetry.addData("b", "%.2f", b);
 
-            robot.BL.setPower(b);
+            } else if (Math.abs(xValueRight) > deadzone || Math.abs(yValueRight) > deadzone) {
 
-            robot.BR.setPower(a);
+                // Or is used here because only one of the y and x values of the right stick needs to be greater than the deadzone
+                turnPower = Range.clip(xValueRight, -1, 1);
 
+                robot.FL.setPower(-turnPower);
+                robot.FR.setPower(turnPower);
+                robot.BL.setPower(-turnPower);
+                robot.BR.setPower(turnPower);
 
-            telemetry.addData("a", "%.2f", a);
+            } else {
 
-            telemetry.addData("b", "%.2f", b);
-
-        } else if (Math.abs(xValueRight) > deadzone || Math.abs(yValueRight) > deadzone) {
-
-            // Or is used here because only one of the y and x values of the right stick needs to be greater than the deadzone
-            turnPower = Range.clip(xValueRight, -1, 1);
-
-
-            robot.FL.setPower(-turnPower);
-
-            robot.FR.setPower(turnPower);
-
-            robot.BL.setPower(-turnPower);
-
-            robot.BR.setPower(turnPower);
+                robot.FL.setPower(0);
+                robot.FR.setPower(0);
+                robot.BL.setPower(0);
+                robot.BR.setPower(0);
+            }
 
         } else {
 
-            robot.FL.setPower(0);
+            if (Math.abs(xValueRight) <= deadzone && Math.abs(yValueRight) <= deadzone) {
 
-            robot.FR.setPower(0);
+                // And is used here because both the y and x values of the right stick should be less than the deadzone
+                a = Range.clip(yValueLeft + xValueLeft, -0.6f, 0.6f);
+                b = Range.clip(yValueLeft - xValueLeft, -0.6f, 0.6f);
 
-            robot.BL.setPower(0);
 
-            robot.BR.setPower(0);
+                robot.FL.setPower(a);
+                robot.FR.setPower(b);
+                robot.BL.setPower(b);
+                robot.BR.setPower(a);
 
+                telemetry.addData("a", "%.2f", a);
+                telemetry.addData("b", "%.2f", b);
+
+            } else if (Math.abs(xValueRight) > deadzone || Math.abs(yValueRight) > deadzone) {
+
+                // Or is used here because only one of the y and x values of the right stick needs to be greater than the deadzone
+                turnPower = Range.clip(xValueRight, -1, 1);
+
+                robot.FL.setPower(-turnPower);
+                robot.FR.setPower(turnPower);
+                robot.BL.setPower(-turnPower);
+                robot.BR.setPower(turnPower);
+
+            } else {
+
+                robot.FL.setPower(0);
+                robot.FR.setPower(0);
+                robot.BL.setPower(0);
+                robot.BR.setPower(0);
+            }
         }
 
 
         if (gamepad1.dpad_up) {
+
             robot.Swing.setPower(.6);
 
-        } else {
-            robot.Swing.setPower(0);
-        }
+        } else if (gamepad1.dpad_down) {
 
-        if (gamepad1.dpad_down) {
             robot.Swing.setPower(-.6);
-        } else
-        {
+
+        } else {
+
             robot.Swing.setPower(0);
         }
 
         if(gamepad1.a){
 
-            robot.Claw.setPosition(1);
+            robot.Claw.setPosition(.4);
 
-        }
-        if(gamepad1.b){
+        } else if(gamepad1.b){
 
             robot.Claw.setPosition(0);
+        }
 
-        }
-        if(gamepad1.right_bumper) {
+        if(gamepad1.left_bumper) {
 
-            robot.Pivot.setPower(.4);
-        }
-        else if(gamepad1.left_bumper) {
+            robot.Pivot.setPosition(armRot+0.0005);
 
-            robot.Pivot.setPower(-.4);
+        } else if(gamepad1.right_bumper) {
+
+            robot.Pivot.setPosition(armRot-0.0005);
+
+        } else{
+
+            robot.Pivot.setPosition(armRot);
         }
-        else{
-            robot.Pivot.setPower(0);
-        }
-        //telemetry.addData("position", position);
+
+        telemetry.addData("position", position);
     }
 
     /*
