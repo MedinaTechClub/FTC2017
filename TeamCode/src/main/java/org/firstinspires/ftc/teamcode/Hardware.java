@@ -27,16 +27,16 @@ public class Hardware
     // Winch Motor, used to extend the Pulley Arm
     public DcMotor Winch = null;
     // Forklift Motor, used to raise/lower the Forklift
-    public DcMotor Lift = null;
+  //  public DcMotor Lift = null;
 
     /* Servos */
     // Color Sensor Arm Servo, used to raise/lower the arm
     public Servo ColorArm = null;
+    // Grip Servo on Forklift, used to capture glyphs
+    public Servo Grip = null;
     // End Effectors of Pulley Arm, used to control the Relic
     public Servo Claw = null;
     public Servo Wrist = null;
-    // Grip Servo on Forklift, used to capture glyphs
-    public Servo Grip = null;
 
     /* Sensors */
     // Color Sensor, used to detect which jewel to knock off
@@ -68,21 +68,21 @@ public class Hardware
         BR = hwMap.get(DcMotor.class, "FR");
         BL = hwMap.get(DcMotor.class, "BR");
         Winch = hwMap.get(DcMotor.class, "Winch");
-        Lift = hwMap.get(DcMotor.class, "Lift");
+      //  Lift = hwMap.get(DcMotor.class, "Lift");
         // Set Motor's Directions
         FR.setDirection(DcMotor.Direction.FORWARD);     // Set to REVERSE if using AndyMark motors
         FL.setDirection(DcMotor.Direction.REVERSE);     // Set to FORWARD if using AndyMark motors
         BR.setDirection(DcMotor.Direction.FORWARD);     // Set to REVERSE if using AndyMark motors
         BL.setDirection(DcMotor.Direction.REVERSE);     // Set to FORWARD if using AndyMark motors
         Winch.setDirection(DcMotorSimple.Direction.FORWARD);    // Set to REVERSE if using AndyMark motors
-        Lift.setDirection(DcMotorSimple.Direction.FORWARD);     // Set to REVERSE if using AndyMark motors
+       // Lift.setDirection(DcMotorSimple.Direction.FORWARD);     // Set to REVERSE if using AndyMark motors
         // Set Motors to Run with or Without Encoders
         FR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         FL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         Winch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        Lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+      //  Lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         /* Define and Initialize Servos */
@@ -93,9 +93,9 @@ public class Hardware
         Wrist = hwMap.get(Servo.class, "Wrist");
         Grip = hwMap.get(Servo.class, "Grip");
         // Set Servo's Initial Positions
-        ColorArm.setPosition(0);
-        Claw.setPosition(0);
-        Wrist.setPosition(0);
+        ColorArm.setPosition(0.5);
+        Claw.setPosition(1);
+        Wrist.setPosition(1);
         Grip.setPosition(0);
 
 

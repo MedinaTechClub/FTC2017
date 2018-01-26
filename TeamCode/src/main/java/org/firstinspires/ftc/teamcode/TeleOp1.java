@@ -62,16 +62,27 @@ public class TeleOp1 extends OpMode
         xValueRight = Range.clip(xValueRight, -1, 1);
         yValueLeft = Range.clip(yValueLeft, -1, 1);
 
-        // Pressing "A" opens the claw
-        //if (gamepad1.a) {
+        // Pressing "A" opens and closes the claw
+        if (gamepad1.a) {
 
-            //robot.Claw.setPosition(.4);
+            if (robot.Claw.getPosition() == 0.4)
+                robot.Claw.setPosition(1);
+            else if (robot.Claw.getPosition() == 1)
+                robot.Claw.setPosition(0.4);
+            else
+                robot.Claw.setPosition(1);
+        }
 
-            // Pressing "B" closes the claw
-        //} else if (gamepad1.b) {
+        // Pressing "B" changes the wrist position
+        if (gamepad1.b) {
 
-            //robot.Claw.setPosition(0);
-        //}
+            if (robot.Wrist.getPosition() == 1)
+                robot.Wrist.setPosition(0.5);
+            else if (robot.Wrist.getPosition() == 0.5)
+                robot.Wrist.setPosition(1);
+            else
+                robot.Wrist.setPosition(1);
+        }
 
         // Turn left/right, overrides forward/back
         if (Math.abs(xValueRight) > deadzone) {
@@ -96,9 +107,19 @@ public class TeleOp1 extends OpMode
         }
 
 
-        telemetry.addData("Encoder ticks", robot.FL.getCurrentPosition());
+        telemetry.addData("Drive Encoder Ticks", robot.FL.getCurrentPosition());
+        telemetry.addData("Winch Encoder Ticks", robot.Winch.getCurrentPosition());
+        telemetry.addData("ColorArm Position", robot.ColorArm.getPosition());
+        telemetry.addData("Wrist Position", robot.Wrist.getPosition());
+        telemetry.addData("Claw Position", robot.Claw.getPosition());
+        telemetry.addData("Grip Position", robot.Grip.getPosition());
+        telemetry.addData("Color Sensor Data Red", robot.Color.red());
+        telemetry.addData("Color Sensor Data Blue", robot.Color.blue());
+
         /*
-        // THIS IS THE OLD STUFF I DON'T LIKE IT I WONT USE IT!
+
+        // This is used for an Omniwheel base
+
         // Group a is Front Left and Rear Right, Group b is Front Right and Rear Left
         float a;
         float b;
@@ -212,6 +233,7 @@ public class TeleOp1 extends OpMode
         telemetry.addData("position", position);
 
     */
+
     /*
      * Code to run ONCE after the driver hits STOP
      */

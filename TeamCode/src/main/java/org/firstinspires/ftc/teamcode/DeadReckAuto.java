@@ -43,6 +43,39 @@ public class DeadReckAuto extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()){
+
+            robot.ColorArm.setPosition(0.54);
+
+            robot.clock.reset();
+            while(robot.clock.milliseconds()<500)
+
+            if(robot.Color.red() > robot.Color.blue()){
+                while(robot.FL.getCurrentPosition() < 200) {
+                    robot.FL.setPower(.1);
+                    robot.FR.setPower(.1);
+                    robot.BL.setPower(.1);
+                    robot.BR.setPower(.1);
+                }
+            } else if(robot.Color.red() < robot.Color.blue()){
+                while(robot.FL.getCurrentPosition() > -200) {
+                    robot.FL.setPower(-.1);
+                    robot.FR.setPower(-.1);
+                    robot.BL.setPower(-.1);
+                    robot.BR.setPower(-.1);
+                }
+            }
+
+            robot.FL.setPower(0);
+            robot.FR.setPower(0);
+            robot.BL.setPower(0);
+            robot.BR.setPower(0);
+
+            robot.ColorArm.setPosition(0.5);
+
+            robot.clock.reset();
+            while(robot.clock.milliseconds()<500)
+
+
             while(robot.FL.getCurrentPosition() < firstRun){
                 robot.FL.setPower(.5);
                 robot.FR.setPower(.5);
