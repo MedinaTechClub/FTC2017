@@ -65,23 +65,29 @@ public class TeleOp1 extends OpMode
         // Pressing "A" opens and closes the claw
         if (gamepad1.a) {
 
-            if (robot.Claw.getPosition() == 0.4)
-                robot.Claw.setPosition(1);
-            else if (robot.Claw.getPosition() == 1)
-                robot.Claw.setPosition(0.4);
+            if (robot.Claw.getPosition() < 0.7)
+                while(gamepad1.a){
+                    robot.Claw.setPosition(1);}
+            else if (robot.Claw.getPosition() > 0.7)
+                while(gamepad1.a){
+                    robot.Claw.setPosition(0.4);}
             else
-                robot.Claw.setPosition(1);
+                while(gamepad1.a)
+                    robot.Claw.setPosition(1);
         }
 
         // Pressing "B" changes the wrist position
         if (gamepad1.b) {
 
             if (robot.Wrist.getPosition() == 1)
-                robot.Wrist.setPosition(0.5);
+                while(gamepad1.b)
+                    robot.Wrist.setPosition(0.5);
             else if (robot.Wrist.getPosition() == 0.5)
-                robot.Wrist.setPosition(1);
+                while(gamepad1.b)
+                    robot.Wrist.setPosition(1);
             else
-                robot.Wrist.setPosition(1);
+                while(gamepad1.b)
+                    robot.Wrist.setPosition(1);
         }
 
         // Turn left/right, overrides forward/back

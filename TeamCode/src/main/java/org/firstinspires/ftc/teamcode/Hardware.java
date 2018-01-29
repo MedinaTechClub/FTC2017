@@ -76,6 +76,13 @@ public class Hardware
         BL.setDirection(DcMotor.Direction.REVERSE);     // Set to FORWARD if using AndyMark motors
         Winch.setDirection(DcMotorSimple.Direction.FORWARD);    // Set to REVERSE if using AndyMark motors
        // Lift.setDirection(DcMotorSimple.Direction.FORWARD);     // Set to REVERSE if using AndyMark motors
+        // Reset Motor Encoders
+        FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Winch.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      //  Lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         // Set Motors to Run with or Without Encoders
         FR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         FL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -93,7 +100,7 @@ public class Hardware
         Wrist = hwMap.get(Servo.class, "Wrist");
         Grip = hwMap.get(Servo.class, "Grip");
         // Set Servo's Initial Positions
-        ColorArm.setPosition(0.5);
+        ColorArm.setPosition(0);
         Claw.setPosition(1);
         Wrist.setPosition(1);
         Grip.setPosition(0);

@@ -31,9 +31,9 @@ public class DeadReckAuto extends LinearOpMode {
     /* Declare OpMode members. */
     Hardware robot = new Hardware();
 
-    int firstRun = 2764;
-    int turn = 3994;
-    int secondRun = 5999;
+    int firstRun = 2764 - 500;
+    int turn = 3994 - 500;
+    int secondRun = 5999 - 500;
 
     @Override
     public void runOpMode() {
@@ -44,21 +44,21 @@ public class DeadReckAuto extends LinearOpMode {
 
         while(opModeIsActive()){
 
-            robot.ColorArm.setPosition(0.54);
+            robot.ColorArm.setPosition(.8);
 
             robot.clock.reset();
-            while(robot.clock.milliseconds()<500)
+            while(robot.clock.milliseconds()<1500){}
 
             if(robot.Color.red() > robot.Color.blue()){
                 while(robot.FL.getCurrentPosition() < 200) {
-                    robot.FL.setPower(.1);
+                    robot.FL.setPower(.3);
                     robot.FR.setPower(.1);
                     robot.BL.setPower(.1);
                     robot.BR.setPower(.1);
                 }
             } else if(robot.Color.red() < robot.Color.blue()){
                 while(robot.FL.getCurrentPosition() > -200) {
-                    robot.FL.setPower(-.1);
+                    robot.FL.setPower(-.3);
                     robot.FR.setPower(-.1);
                     robot.BL.setPower(-.1);
                     robot.BR.setPower(-.1);
@@ -70,10 +70,10 @@ public class DeadReckAuto extends LinearOpMode {
             robot.BL.setPower(0);
             robot.BR.setPower(0);
 
-            robot.ColorArm.setPosition(0.5);
+            robot.ColorArm.setPosition(0);
 
             robot.clock.reset();
-            while(robot.clock.milliseconds()<500)
+            while(robot.clock.milliseconds()<1500){}
 
 
             while(robot.FL.getCurrentPosition() < firstRun){
@@ -106,6 +106,8 @@ public class DeadReckAuto extends LinearOpMode {
             robot.FR.setPower(0);
             robot.BL.setPower(0);
             robot.BR.setPower(0);
+
+            stop();
 
         }
 
